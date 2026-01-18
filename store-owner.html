@@ -276,6 +276,7 @@
         <div class="tabs">
             <button class="tab active" data-tab="orders" onclick="switchTab('orders')">📋 Orders <span class="tab-count" id="ordersCount">0</span></button>
             <button class="tab" data-tab="menu" onclick="switchTab('menu')">🍽️ Menu <span class="tab-count" id="menuCount">0</span></button>
+            <button class="tab" data-tab="giftcerts" onclick="switchTab('giftcerts')">🎫 Gift Certs <span class="tab-count" id="giftCertCount">0</span></button>
             <button class="tab" data-tab="promotions" onclick="switchTab('promotions')">🎁 Promotions <span class="tab-count" id="promoCount">0</span></button>
             <button class="tab" data-tab="analytics" onclick="switchTab('analytics')">📊 Analytics</button>
         </div>
@@ -324,6 +325,102 @@
                     <select class="form-select" style="width: auto;" id="categoryFilter" onchange="filterMenuItems()"><option value="">All Categories</option></select>
                 </div>
                 <div class="menu-grid" id="menuGrid"><div class="empty-state"><div class="empty-state-icon">🍽️</div><div>No menu items yet</div></div></div>
+            </div>
+        </div>
+
+        <!-- Gift Certificates Tab -->
+        <div id="giftCertsTab" style="display: none;">
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <div class="stat-card highlight">
+                    <div class="stat-label">💰 Active Balance</div>
+                    <div class="stat-value green" id="certActiveBalance">$0</div>
+                    <div class="stat-sub">Outstanding certificates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🎫 Certificates Sold</div>
+                    <div class="stat-value blue" id="certTotalSold">0</div>
+                    <div class="stat-sub">Total issued</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-label">✅ Redeemed Today</div>
+                    <div class="stat-value purple" id="certRedeemedToday">$0</div>
+                    <div class="stat-sub">Used at your restaurant</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-label">⏳ Pending Scan</div>
+                    <div class="stat-value orange" id="certPendingScan">0</div>
+                    <div class="stat-sub">Awaiting redemption</div>
+                </div>
+            </div>
+
+            <!-- Quick Scan Section -->
+            <div class="section-card" style="border-color: var(--accent-green); background: linear-gradient(135deg, var(--bg-card), var(--accent-green-dim));">
+                <div class="section-header">
+                    <div class="section-title">📱 Scan / Redeem Certificate</div>
+                </div>
+                <div style="padding: 1.5rem;">
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">Enter the certificate code or scan customer's QR code</div>
+                        <div style="display: flex; gap: 0.75rem; max-width: 400px; margin: 0 auto;">
+                            <input type="text" class="form-input" id="certScanInput" placeholder="Enter code (e.g., LB-XXXX-XXXX)" style="flex: 1; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; text-align: center;">
+                            <button class="btn btn-primary" onclick="lookupCertificate()" style="padding: 0.75rem 1.5rem;">
+                                🔍 Lookup
+                            </button>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+                        <span style="display: inline-flex; align-items: center; gap: 0.5rem;">📷 Use phone camera to scan QR codes</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificate Lookup Result (hidden by default) -->
+            <div class="section-card" id="certLookupResult" style="display: none;">
+                <div class="section-header">
+                    <div class="section-title">🎫 Certificate Found</div>
+                    <button class="btn btn-secondary btn-sm" onclick="closeCertLookup()">✕ Close</button>
+                </div>
+                <div style="padding: 1.5rem;" id="certLookupContent">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Recent Redemptions -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-title">📜 Recent Redemptions</div>
+                    <button class="btn btn-secondary btn-sm" onclick="loadGiftCertificates()">🔄 Refresh</button>
+                </div>
+                <div id="recentRedemptions">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎫</div>
+                        <div>No redemptions yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Certificates for this Restaurant -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-title">📋 Certificates for Your Restaurant</div>
+                </div>
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="certSearch" placeholder="Search by code, customer name, or phone..." oninput="filterCertificates()">
+                    <select class="form-select" style="width: auto;" id="certStatusFilter" onchange="filterCertificates()">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="partially_used">Partially Used</option>
+                        <option value="fully_redeemed">Fully Redeemed</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                </div>
+                <div id="certificatesList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎫</div>
+                        <div>No certificates yet</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -451,6 +548,79 @@
                     </div>
                     <div class="form-group"><label class="form-label">Promotion Name *</label><input type="text" class="form-input" id="promoName" placeholder="e.g., Lunch Combo Special" required></div>
                     <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="promoDescription" placeholder="Describe your promotion..."></textarea></div>
+
+    <!-- Gift Certificate Redemption Modal -->
+    <div class="modal-overlay" id="redeemModal">
+        <div class="modal wide">
+            <div class="modal-header">
+                <div class="modal-title">💳 Redeem Gift Certificate</div>
+                <button class="modal-close" onclick="closeRedeemModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert" id="redeemAlert"></div>
+                
+                <!-- Certificate Info -->
+                <div id="redeemCertInfo" style="background: var(--bg-dark); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;">
+                    <!-- Populated dynamically -->
+                </div>
+                
+                <!-- Redemption Form -->
+                <form id="redeemForm">
+                    <input type="hidden" id="redeemCertId">
+                    <input type="hidden" id="redeemCertCode">
+                    
+                    <div class="form-group">
+                        <label class="form-label">💵 Bill Amount *</label>
+                        <div style="position: relative;">
+                            <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.25rem; color: var(--text-secondary);">$</span>
+                            <input type="number" class="form-input" id="redeemAmount" step="0.01" min="0.01" required style="padding-left: 2.5rem; font-size: 1.5rem; font-weight: 700;" placeholder="0.00" oninput="updateRedeemPreview()">
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Enter the customer's total bill amount</div>
+                    </div>
+                    
+                    <!-- Redemption Preview -->
+                    <div id="redeemPreview" style="background: var(--accent-green-dim); border: 1px solid var(--accent-green); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; display: none;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Certificate Balance</div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-green);" id="previewBalance">$0.00</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Amount to Deduct</div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-orange);" id="previewDeduct">$0.00</div>
+                            </div>
+                        </div>
+                        <div style="border-top: 1px solid var(--border); margin-top: 1rem; padding-top: 1rem; text-align: center;">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Remaining Balance After</div>
+                            <div style="font-size: 1.5rem; font-weight: 700;" id="previewRemaining">$0.00</div>
+                        </div>
+                        <div id="previewCustomerOwes" style="display: none; background: var(--accent-orange-dim); border-radius: 8px; padding: 0.75rem; margin-top: 1rem; text-align: center;">
+                            <div style="font-size: 0.8rem; color: var(--accent-orange);">⚠️ Customer owes additional:</div>
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-orange);" id="previewOwes">$0.00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📝 Notes (Optional)</label>
+                        <textarea class="form-textarea" id="redeemNotes" placeholder="e.g., Table 5, Server: John"></textarea>
+                    </div>
+                    
+                    <!-- Verification PIN -->
+                    <div class="form-group">
+                        <label class="form-label">🔐 Staff PIN *</label>
+                        <input type="password" class="form-input" id="redeemPin" maxlength="4" pattern="[0-9]{4}" required placeholder="Enter 4-digit PIN" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Default PIN: 1234 (change in settings)</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeRedeemModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmRedemption()" style="background: var(--accent-green);">
+                    ✅ Confirm Redemption
+                </button>
+            </div>
+        </div>
+    </div>
                     
                     <div id="promoDetails">
                         <!-- Dynamic fields based on promo type -->
@@ -735,9 +905,11 @@
             document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
             document.getElementById('ordersTab').style.display = tab === 'orders' ? 'block' : 'none';
             document.getElementById('menuTab').style.display = tab === 'menu' ? 'block' : 'none';
+            document.getElementById('giftCertsTab').style.display = tab === 'giftcerts' ? 'block' : 'none';
             document.getElementById('promotionsTab').style.display = tab === 'promotions' ? 'block' : 'none';
             document.getElementById('analyticsTab').style.display = tab === 'analytics' ? 'block' : 'none';
             if (tab === 'analytics') updateAnalytics();
+            if (tab === 'giftcerts') loadGiftCertificates();
         }
 
         // ========== ORDERS ==========
@@ -1982,6 +2154,400 @@
         // Load notifications on page load
         setTimeout(() => loadStoreNotifications(), 1000);
         function formatTime(dateString) { if (!dateString) return ''; const date = new Date(dateString); const diff = new Date() - date; if (diff < 60000) return 'Just now'; if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago'; if (diff < 86400000) return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }); return date.toLocaleDateString(); }
+
+        // ========== GIFT CERTIFICATES ==========
+        let giftCertificates = [];
+        let redemptions = [];
+        let currentRedeemCert = null;
+        const STAFF_PIN = '1234'; // Default PIN - in production, store in database per restaurant
+
+        // Generate secure certificate code
+        function generateCertCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Removed confusing chars like 0/O, 1/I
+            let code = 'LB-';
+            for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+            code += '-';
+            for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+            return code;
+        }
+
+        // Generate verification hash (simple version - in production use HMAC)
+        function generateVerifyHash(certId, amount) {
+            const data = certId + '-' + amount + '-localbites-secret';
+            let hash = 0;
+            for (let i = 0; i < data.length; i++) {
+                const char = data.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(36).toUpperCase().slice(0, 8);
+        }
+
+        async function loadGiftCertificates() {
+            // Load certificates that can be used at this restaurant
+            // In production, filter by restaurant_id or "any restaurant" certificates
+            const { data: certs } = await db
+                .from('gift_certificates')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            giftCertificates = certs || [];
+            
+            // Load redemptions for this restaurant
+            let redemptionQuery = db
+                .from('certificate_redemptions')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            if (restaurantId) {
+                redemptionQuery = redemptionQuery.eq('restaurant_id', restaurantId);
+            }
+            
+            const { data: redems } = await redemptionQuery;
+            redemptions = redems || [];
+            
+            updateCertificateStats();
+            renderCertificates();
+            renderRecentRedemptions();
+        }
+
+        function updateCertificateStats() {
+            // Calculate stats
+            const activeCerts = giftCertificates.filter(c => c.status === 'active' || c.status === 'partially_used');
+            const totalActiveBalance = activeCerts.reduce((sum, c) => sum + (c.current_balance || 0), 0);
+            const totalSold = giftCertificates.length;
+            
+            // Today's redemptions
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const todayRedemptions = redemptions.filter(r => new Date(r.created_at) >= today);
+            const redeemedToday = todayRedemptions.reduce((sum, r) => sum + (r.amount || 0), 0);
+            
+            // Pending (active certs not yet used)
+            const pendingScan = giftCertificates.filter(c => c.status === 'active' && c.current_balance === c.bonus_balance).length;
+            
+            document.getElementById('certActiveBalance').textContent = '$' + totalActiveBalance.toFixed(2);
+            document.getElementById('certTotalSold').textContent = totalSold;
+            document.getElementById('certRedeemedToday').textContent = '$' + redeemedToday.toFixed(2);
+            document.getElementById('certPendingScan').textContent = pendingScan;
+            document.getElementById('giftCertCount').textContent = activeCerts.length;
+        }
+
+        function renderCertificates() {
+            const container = document.getElementById('certificatesList');
+            const searchTerm = document.getElementById('certSearch')?.value?.toLowerCase() || '';
+            const statusFilter = document.getElementById('certStatusFilter')?.value || '';
+            
+            let filtered = giftCertificates.filter(cert => {
+                const matchesSearch = !searchTerm || 
+                    cert.code.toLowerCase().includes(searchTerm) ||
+                    (cert.buyer_name || '').toLowerCase().includes(searchTerm) ||
+                    (cert.buyer_phone || '').includes(searchTerm);
+                const matchesStatus = !statusFilter || cert.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎫</div><div>No certificates match your search</div></div>';
+                return;
+            }
+            
+            container.innerHTML = filtered.map(cert => {
+                const statusColors = {
+                    'active': { bg: 'var(--accent-green-dim)', color: 'var(--accent-green)', label: '✅ Active' },
+                    'partially_used': { bg: 'var(--accent-orange-dim)', color: 'var(--accent-orange)', label: '⏳ Partially Used' },
+                    'fully_redeemed': { bg: 'var(--accent-blue-dim)', color: 'var(--accent-blue)', label: '✔️ Fully Redeemed' },
+                    'expired': { bg: 'var(--accent-red-dim)', color: 'var(--accent-red)', label: '❌ Expired' }
+                };
+                const status = statusColors[cert.status] || statusColors['active'];
+                const usedAmount = (cert.bonus_balance || 0) - (cert.current_balance || 0);
+                
+                return `
+                    <div style="display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid var(--border); gap: 1rem;">
+                        <div style="flex-shrink: 0; width: 50px; height: 50px; background: var(--bg-dark); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🎫</div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 700; font-family: monospace; font-size: 1rem; letter-spacing: 1px;">${cert.code}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">${cert.buyer_name || 'Unknown'} • ${formatTime(cert.created_at)}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.1rem; font-weight: 700; color: var(--accent-green);">$${(cert.current_balance || 0).toFixed(2)}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">of $${(cert.bonus_balance || 0).toFixed(2)}</div>
+                        </div>
+                        <div style="background: ${status.bg}; color: ${status.color}; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
+                            ${status.label}
+                        </div>
+                        ${cert.status !== 'fully_redeemed' && cert.status !== 'expired' ? 
+                            `<button class="btn btn-primary btn-sm" onclick="openRedeemModal('${cert.id}')">💳 Redeem</button>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderRecentRedemptions() {
+            const container = document.getElementById('recentRedemptions');
+            const recent = redemptions.slice(0, 10); // Last 10
+            
+            if (recent.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎫</div><div>No redemptions yet</div></div>';
+                return;
+            }
+            
+            container.innerHTML = recent.map(r => `
+                <div style="display: flex; align-items: center; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); gap: 1rem;">
+                    <div style="width: 40px; height: 40px; background: var(--accent-green-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-green);">✓</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; font-family: monospace;">${r.certificate_code || 'N/A'}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">${r.notes || 'No notes'} • ${formatTime(r.created_at)}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 1rem; font-weight: 700; color: var(--accent-green);">-$${(r.amount || 0).toFixed(2)}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">Redeemed</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCertificates() {
+            renderCertificates();
+        }
+
+        async function lookupCertificate() {
+            const code = document.getElementById('certScanInput').value.trim().toUpperCase();
+            if (!code) {
+                alert('Please enter a certificate code');
+                return;
+            }
+            
+            // Try to find the certificate
+            const { data: certs, error } = await db
+                .from('gift_certificates')
+                .select('*')
+                .eq('code', code)
+                .limit(1);
+            
+            if (error || !certs || certs.length === 0) {
+                document.getElementById('certLookupResult').style.display = 'block';
+                document.getElementById('certLookupContent').innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">❌</div>
+                        <div style="font-size: 1.1rem; font-weight: 600; color: var(--accent-red);">Certificate Not Found</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Code "${code}" does not exist in our system</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const cert = certs[0];
+            showCertificateLookupResult(cert);
+        }
+
+        function showCertificateLookupResult(cert) {
+            const isValid = cert.status === 'active' || cert.status === 'partially_used';
+            const statusColors = {
+                'active': { bg: 'var(--accent-green-dim)', border: 'var(--accent-green)', color: 'var(--accent-green)', icon: '✅', label: 'VALID' },
+                'partially_used': { bg: 'var(--accent-orange-dim)', border: 'var(--accent-orange)', color: 'var(--accent-orange)', icon: '⏳', label: 'PARTIALLY USED' },
+                'fully_redeemed': { bg: 'var(--accent-red-dim)', border: 'var(--accent-red)', color: 'var(--accent-red)', icon: '❌', label: 'FULLY REDEEMED' },
+                'expired': { bg: 'var(--accent-red-dim)', border: 'var(--accent-red)', color: 'var(--accent-red)', icon: '⏰', label: 'EXPIRED' }
+            };
+            const status = statusColors[cert.status] || statusColors['active'];
+            
+            document.getElementById('certLookupResult').style.display = 'block';
+            document.getElementById('certLookupContent').innerHTML = `
+                <div style="background: ${status.bg}; border: 2px solid ${status.border}; border-radius: 12px; padding: 1.5rem; text-align: center; margin-bottom: 1.5rem;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">${status.icon}</div>
+                    <div style="font-size: 1.25rem; font-weight: 700; color: ${status.color};">${status.label}</div>
+                    <div style="font-family: monospace; font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; margin-top: 0.5rem;">${cert.code}</div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="background: var(--bg-dark); padding: 1rem; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Available Balance</div>
+                        <div style="font-size: 1.75rem; font-weight: 700; color: var(--accent-green);">$${(cert.current_balance || 0).toFixed(2)}</div>
+                    </div>
+                    <div style="background: var(--bg-dark); padding: 1rem; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Original Value</div>
+                        <div style="font-size: 1.75rem; font-weight: 700;">$${(cert.bonus_balance || 0).toFixed(2)}</div>
+                    </div>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Certificate Details</div>
+                    <div style="display: grid; gap: 0.5rem; font-size: 0.9rem;">
+                        <div><span style="color: var(--text-muted);">Purchased by:</span> ${cert.buyer_name || 'Unknown'}</div>
+                        <div><span style="color: var(--text-muted);">Paid:</span> $${(cert.amount_paid || 0).toFixed(2)} → Got $${(cert.bonus_balance || 0).toFixed(2)} (${Math.round(((cert.bonus_balance || 0) / (cert.amount_paid || 1) - 1) * 100)}% bonus)</div>
+                        <div><span style="color: var(--text-muted);">Issued:</span> ${new Date(cert.created_at).toLocaleDateString()}</div>
+                        ${cert.expires_at ? `<div><span style="color: var(--text-muted);">Expires:</span> ${new Date(cert.expires_at).toLocaleDateString()}</div>` : ''}
+                    </div>
+                </div>
+                
+                ${isValid ? `
+                    <button class="btn btn-primary" onclick="openRedeemModal('${cert.id}')" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+                        💳 Redeem This Certificate
+                    </button>
+                ` : `
+                    <div style="text-align: center; padding: 1rem; color: var(--accent-red);">
+                        This certificate cannot be redeemed
+                    </div>
+                `}
+            `;
+        }
+
+        function closeCertLookup() {
+            document.getElementById('certLookupResult').style.display = 'none';
+            document.getElementById('certScanInput').value = '';
+        }
+
+        function openRedeemModal(certId) {
+            const cert = giftCertificates.find(c => c.id === certId);
+            if (!cert) {
+                alert('Certificate not found');
+                return;
+            }
+            
+            currentRedeemCert = cert;
+            document.getElementById('redeemCertId').value = cert.id;
+            document.getElementById('redeemCertCode').value = cert.code;
+            document.getElementById('redeemAmount').value = '';
+            document.getElementById('redeemNotes').value = '';
+            document.getElementById('redeemPin').value = '';
+            document.getElementById('redeemPreview').style.display = 'none';
+            
+            // Show cert info
+            document.getElementById('redeemCertInfo').innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="font-size: 2.5rem;">🎫</div>
+                    <div style="flex: 1;">
+                        <div style="font-family: monospace; font-size: 1.25rem; font-weight: 700; letter-spacing: 1px;">${cert.code}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">${cert.buyer_name || 'Customer'}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Available</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-green);">$${(cert.current_balance || 0).toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('redeemAlert').className = 'alert';
+            document.getElementById('redeemAlert').textContent = '';
+            document.getElementById('redeemModal').classList.add('visible');
+        }
+
+        function closeRedeemModal() {
+            document.getElementById('redeemModal').classList.remove('visible');
+            currentRedeemCert = null;
+        }
+
+        function updateRedeemPreview() {
+            if (!currentRedeemCert) return;
+            
+            const billAmount = parseFloat(document.getElementById('redeemAmount').value) || 0;
+            const balance = currentRedeemCert.current_balance || 0;
+            
+            if (billAmount <= 0) {
+                document.getElementById('redeemPreview').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('redeemPreview').style.display = 'block';
+            
+            const deductAmount = Math.min(billAmount, balance);
+            const remaining = balance - deductAmount;
+            const customerOwes = Math.max(0, billAmount - balance);
+            
+            document.getElementById('previewBalance').textContent = '$' + balance.toFixed(2);
+            document.getElementById('previewDeduct').textContent = '-$' + deductAmount.toFixed(2);
+            document.getElementById('previewRemaining').textContent = '$' + remaining.toFixed(2);
+            document.getElementById('previewRemaining').style.color = remaining > 0 ? 'var(--accent-green)' : 'var(--text-muted)';
+            
+            if (customerOwes > 0) {
+                document.getElementById('previewCustomerOwes').style.display = 'block';
+                document.getElementById('previewOwes').textContent = '$' + customerOwes.toFixed(2);
+            } else {
+                document.getElementById('previewCustomerOwes').style.display = 'none';
+            }
+        }
+
+        async function confirmRedemption() {
+            if (!currentRedeemCert) return;
+            
+            const billAmount = parseFloat(document.getElementById('redeemAmount').value);
+            const pin = document.getElementById('redeemPin').value;
+            const notes = document.getElementById('redeemNotes').value;
+            
+            // Validate
+            if (!billAmount || billAmount <= 0) {
+                showRedeemAlert('Please enter a valid bill amount', 'error');
+                return;
+            }
+            
+            if (pin !== STAFF_PIN) {
+                showRedeemAlert('Invalid staff PIN', 'error');
+                return;
+            }
+            
+            const balance = currentRedeemCert.current_balance || 0;
+            const deductAmount = Math.min(billAmount, balance);
+            const newBalance = balance - deductAmount;
+            const newStatus = newBalance <= 0 ? 'fully_redeemed' : 'partially_used';
+            
+            try {
+                // Create redemption record
+                const { error: redemptionError } = await db
+                    .from('certificate_redemptions')
+                    .insert({
+                        certificate_id: currentRedeemCert.id,
+                        certificate_code: currentRedeemCert.code,
+                        restaurant_id: restaurantId || null,
+                        amount: deductAmount,
+                        bill_amount: billAmount,
+                        balance_before: balance,
+                        balance_after: newBalance,
+                        notes: notes,
+                        verified_by: 'Staff PIN',
+                        verification_hash: generateVerifyHash(currentRedeemCert.id, deductAmount)
+                    });
+                
+                if (redemptionError) throw redemptionError;
+                
+                // Update certificate balance
+                const { error: updateError } = await db
+                    .from('gift_certificates')
+                    .update({
+                        current_balance: newBalance,
+                        status: newStatus,
+                        last_used_at: new Date().toISOString(),
+                        times_used: (currentRedeemCert.times_used || 0) + 1
+                    })
+                    .eq('id', currentRedeemCert.id);
+                
+                if (updateError) throw updateError;
+                
+                // Success!
+                closeRedeemModal();
+                closeCertLookup();
+                showToast(`✅ Redeemed $${deductAmount.toFixed(2)} from certificate ${currentRedeemCert.code}`);
+                
+                // Reload data
+                await loadGiftCertificates();
+                
+            } catch (err) {
+                console.error('Redemption error:', err);
+                showRedeemAlert('Failed to process redemption: ' + err.message, 'error');
+            }
+        }
+
+        function showRedeemAlert(message, type) {
+            const alert = document.getElementById('redeemAlert');
+            alert.className = 'alert visible ' + type;
+            alert.textContent = message;
+        }
+
+        // Initialize gift certificates on page load
+        setTimeout(() => {
+            if (document.getElementById('giftCertsTab')) {
+                loadGiftCertificates();
+            }
+        }, 1500);
     </script>
 </body>
 </html>
