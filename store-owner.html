@@ -549,78 +549,7 @@
                     <div class="form-group"><label class="form-label">Promotion Name *</label><input type="text" class="form-input" id="promoName" placeholder="e.g., Lunch Combo Special" required></div>
                     <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="promoDescription" placeholder="Describe your promotion..."></textarea></div>
 
-    <!-- Gift Certificate Redemption Modal -->
-    <div class="modal-overlay" id="redeemModal">
-        <div class="modal wide">
-            <div class="modal-header">
-                <div class="modal-title">💳 Redeem Gift Certificate</div>
-                <button class="modal-close" onclick="closeRedeemModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="alert" id="redeemAlert"></div>
-                
-                <!-- Certificate Info -->
-                <div id="redeemCertInfo" style="background: var(--bg-dark); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;">
-                    <!-- Populated dynamically -->
-                </div>
-                
-                <!-- Redemption Form -->
-                <form id="redeemForm">
-                    <input type="hidden" id="redeemCertId">
-                    <input type="hidden" id="redeemCertCode">
-                    
-                    <div class="form-group">
-                        <label class="form-label">💵 Bill Amount *</label>
-                        <div style="position: relative;">
-                            <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.25rem; color: var(--text-secondary);">$</span>
-                            <input type="number" class="form-input" id="redeemAmount" step="0.01" min="0.01" required style="padding-left: 2.5rem; font-size: 1.5rem; font-weight: 700;" placeholder="0.00" oninput="updateRedeemPreview()">
-                        </div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Enter the customer's total bill amount</div>
-                    </div>
-                    
-                    <!-- Redemption Preview -->
-                    <div id="redeemPreview" style="background: var(--accent-green-dim); border: 1px solid var(--accent-green); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; display: none;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Certificate Balance</div>
-                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-green);" id="previewBalance">$0.00</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Amount to Deduct</div>
-                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-orange);" id="previewDeduct">$0.00</div>
-                            </div>
-                        </div>
-                        <div style="border-top: 1px solid var(--border); margin-top: 1rem; padding-top: 1rem; text-align: center;">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Remaining Balance After</div>
-                            <div style="font-size: 1.5rem; font-weight: 700;" id="previewRemaining">$0.00</div>
-                        </div>
-                        <div id="previewCustomerOwes" style="display: none; background: var(--accent-orange-dim); border-radius: 8px; padding: 0.75rem; margin-top: 1rem; text-align: center;">
-                            <div style="font-size: 0.8rem; color: var(--accent-orange);">⚠️ Customer owes additional:</div>
-                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-orange);" id="previewOwes">$0.00</div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">📝 Notes (Optional)</label>
-                        <textarea class="form-textarea" id="redeemNotes" placeholder="e.g., Table 5, Server: John"></textarea>
-                    </div>
-                    
-                    <!-- Verification PIN -->
-                    <div class="form-group">
-                        <label class="form-label">🔐 Staff PIN *</label>
-                        <input type="password" class="form-input" id="redeemPin" maxlength="4" pattern="[0-9]{4}" required placeholder="Enter 4-digit PIN" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;">
-                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Default PIN: 1234 (change in settings)</div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeRedeemModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="confirmRedemption()" style="background: var(--accent-green);">
-                    ✅ Confirm Redemption
-                </button>
-            </div>
-        </div>
-    </div>
+
                     
                     <div id="promoDetails">
                         <!-- Dynamic fields based on promo type -->
@@ -741,7 +670,63 @@
             <div class="modal-footer"><button class="btn btn-secondary" onclick="closePromoModal()">Cancel</button><button class="btn btn-purple" onclick="savePromo(event)">💾 Save Promotion</button></div>
         </div>
     </div>
-
+<!-- Gift Certificate Redemption Modal -->
+    <div class="modal-overlay" id="redeemModal">
+        <div class="modal wide">
+            <div class="modal-header">
+                <div class="modal-title">💳 Redeem Gift Certificate</div>
+                <button class="modal-close" onclick="closeRedeemModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert" id="redeemAlert"></div>
+                <div id="redeemCertInfo" style="background: var(--bg-dark); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;"></div>
+                <form id="redeemForm">
+                    <input type="hidden" id="redeemCertId">
+                    <input type="hidden" id="redeemCertCode">
+                    <div class="form-group">
+                        <label class="form-label">💵 Bill Amount *</label>
+                        <div style="position: relative;">
+                            <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.25rem; color: var(--text-secondary);">$</span>
+                            <input type="number" class="form-input" id="redeemAmount" step="0.01" min="0.01" required style="padding-left: 2.5rem; font-size: 1.5rem; font-weight: 700;" placeholder="0.00" oninput="updateRedeemPreview()">
+                        </div>
+                    </div>
+                    <div id="redeemPreview" style="background: var(--accent-green-dim); border: 1px solid var(--accent-green); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; display: none;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Certificate Balance</div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-green);" id="previewBalance">$0.00</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Amount to Deduct</div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-orange);" id="previewDeduct">$0.00</div>
+                            </div>
+                        </div>
+                        <div style="border-top: 1px solid var(--border); margin-top: 1rem; padding-top: 1rem; text-align: center;">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Remaining Balance After</div>
+                            <div style="font-size: 1.5rem; font-weight: 700;" id="previewRemaining">$0.00</div>
+                        </div>
+                        <div id="previewCustomerOwes" style="display: none; background: var(--accent-orange-dim); border-radius: 8px; padding: 0.75rem; margin-top: 1rem; text-align: center;">
+                            <div style="font-size: 0.8rem; color: var(--accent-orange);">⚠️ Customer owes additional:</div>
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-orange);" id="previewOwes">$0.00</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">📝 Notes (Optional)</label>
+                        <textarea class="form-textarea" id="redeemNotes" placeholder="e.g., Table 5, Server: John"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">🔐 Staff PIN *</label>
+                        <input type="password" class="form-input" id="redeemPin" maxlength="4" pattern="[0-9]{4}" required placeholder="Enter 4-digit PIN" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Default PIN: 1234</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeRedeemModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmRedemption()" style="background: var(--accent-green);">✅ Confirm Redemption</button>
+            </div>
+        </div>
+    </div>
     <!-- Order Modal -->
     <div class="modal-overlay" id="orderModal">
         <div class="modal"><div class="modal-header"><div class="modal-title" id="orderModalTitle">Order</div><button class="modal-close" onclick="closeOrderModal()">&times;</button></div><div class="modal-body" id="orderModalBody"></div><div class="modal-footer" style="border-top:1px solid var(--border);padding:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;"><button class="btn btn-secondary" onclick="printCustomerReceipt()" style="flex:1;">🧾 Customer Receipt</button><button class="btn btn-secondary" onclick="printKitchenReceipt()" style="flex:1;">👨‍🍳 Kitchen Ticket</button></div></div>
