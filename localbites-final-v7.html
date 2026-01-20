@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LocalBites - Calgary's Local Food</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* WhatsApp Official Colors */
+            --wa-header: #075E54;
+            --wa-header-dark: #054D44;
+            --wa-teal: #128C7E;
+            --wa-green: #25D366;
+            --wa-blue: #34B7F1;
+            --wa-bubble-out: #005C4B;
+            --wa-bg-dark: #0B141A;
+            --wa-surface-dark: #1F2C34;
+            --wa-text-primary: #E9EDEF;
+            --wa-text-secondary: #8696A0;
+            
+            /* LocalBites Accent */
+            --lb-orange: #FF9F43;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--wa-bg-dark);
+            color: var(--wa-text-primary);
+            min-height: 100vh;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* ========== WHATSAPP HEADER ========== */
+        .wa-header {
+            background: var(--wa-header);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .wa-back {
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 4px;
+        }
+        
+        /* Version C Logo - Green Badge */
+        .wa-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--wa-green);
+            position: relative;
+        }
+        
+        .wa-avatar-text {
+            font-size: 8px;
+            font-weight: 800;
+            color: white;
+            text-align: center;
+            line-height: 1.15;
+            text-transform: uppercase;
+        }
+        
+        .wa-contact-info {
+            flex: 1;
+        }
+        
+        .wa-contact-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .wa-contact-name .green {
+            color: var(--wa-green);
+        }
+        
+        .wa-contact-status {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .wa-header-icons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .wa-header-icon {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            padding: 0 0 100px 0;
+            background: var(--wa-bg-dark);
+            /* Subtle WhatsApp pattern */
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231F2C34' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        /* ========== HERO SECTION ========== */
+        .hero {
+            text-align: center;
+            padding: 32px 20px 24px;
+        }
+        
+        /* Large Logo */
+        .hero-logo {
+            width: 88px;
+            height: 88px;
+            background: var(--wa-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 32px rgba(37, 211, 102, 0.35);
+        }
+        
+        .hero-logo-text {
+            font-size: 14px;
+            font-weight: 800;
+            color: white;
+            text-align: center;
+            line-height: 1.15;
+            text-transform: uppercase;
+        }
+        
+        .hero-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 6px;
+        }
+        
+        .hero-title .green {
+            color: var(--wa-green);
+        }
+        
+        .hero-tagline {
+            font-size: 15px;
+            color: var(--wa-text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        /* Trust Row */
+        .trust-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--wa-text-secondary);
+        }
+        
+        .trust-item .icon {
+            color: var(--wa-green);
+        }
+        
+        .trust-item .value {
+            color: var(--wa-green);
+            font-weight: 600;
+        }
+        
+        /* ========== LOCATION INPUT ========== */
+        .location-section {
+            padding: 0 16px 20px;
+        }
+        
+        .location-bar {
+            background: var(--wa-surface-dark);
+            border-radius: 24px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        /* ========== QUICK CATEGORIES ========== */
+        .categories-section {
+            padding: 0 16px 24px;
+        }
+        
+        .section-label {
+            font-size: 13px;
+            color: var(--wa-text-secondary);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .category-item {
+            background: var(--wa-surface-dark);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .category-item:hover, .category-item:active {
+            background: rgba(37, 211, 102, 0.15);
+            border-color: var(--wa-green);
+        }
+        
+        .category-emoji {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .category-name {
+            font-size: 11px;
+            color: var(--wa-text-secondary);
+            font-weight: 500;
+        }
+        
+        /* ========== CTA BUTTON ========== */
+        .cta-section {
+            padding: 0 16px 24px;
+        }
+        
+        .cta-button {
+            width: 100%;
+            padding: 16px 24px;
+            background: var(--wa-green);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(37, 211, 102, 0.45);
+        }
+        
+        .cta-button:active {
+            transform: translateY(0);
+        }
+        
+        /* ========== WHY LOCAL SECTION ========== */
+        .why-local-section {
+            padding: 0 16px 24px;
+        }
+        
+        .why-local-card {
+            background: var(--wa-surface-dark);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        
+        .why-local-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .why-local-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(37, 211, 102, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .why-local-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .why-local-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .why-local-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .why-local-item-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+        
+        .why-local-item-text {
+            font-size: 13px;
+            color: var(--wa-text-secondary);
+            line-height: 1.4;
+        }
+        
+        .why-local-item-text strong {
+            color: var(--wa-green);
+            display: block;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        /* ========== POPULAR RESTAURANTS ========== */
+        .restaurants-section {
+            padding: 0 16px 24px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .see-all {
+            font-size: 13px;
+            color: var(--wa-green);
+            cursor: pointer;
+        }
+        
+        .restaurant-card {
+            background: var(--wa-surface-dark);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .restaurant-card:hover {
+            background: rgba(37, 211, 102, 0.08);
+        }
+        
+        .restaurant-avatar {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--wa-teal) 0%, var(--wa-header) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+        
+        .restaurant-info {
+            flex: 1;
+        }
+        
+        .restaurant-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .restaurant-meta {
+            font-size: 13px;
+            color: var(--wa-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .restaurant-rating {
+            color: var(--lb-orange);
+            font-weight: 600;
+        }
+        
+        .restaurant-action {
+            color: var(--wa-green);
+            font-size: 20px;
+        }
+        
+        /* ========== BOTTOM INPUT BAR ========== */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--wa-surface-dark);
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .bottom-emoji {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .bottom-input {
+            flex: 1;
+            background: var(--wa-bg-dark);
+            border: none;
+            border-radius: 24px;
+            padding: 12px 18px;
+            color: var(--wa-text-primary);
+            font-size: 15px;
+            outline: none;
+        }
+        
+        .bottom-input::placeholder {
+            color: var(--wa-text-secondary);
+        }
+        
+        .bottom-send {
+            width: 48px;
+            height: 48px;
+            background: var(--wa-green);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 22px;
+        }
+        
+        /* ========== MESSAGE BUBBLE (Welcome) ========== */
+        .welcome-message {
+            margin: 0 16px 20px;
+            max-width: 85%;
+        }
+        
+        .message-bubble {
+            background: var(--wa-surface-dark);
+            border-radius: 8px;
+            border-top-left-radius: 0;
+            padding: 10px 14px;
+            position: relative;
+        }
+        
+        .message-text {
+            font-size: 14.5px;
+            line-height: 1.45;
+            color: var(--wa-text-primary);
+        }
+        
+        .message-text .highlight {
+            color: var(--wa-green);
+            font-weight: 600;
+        }
+        
+        /* ========== BOT HELPER SECTION ========== */
+        .bot-helper-section {
+            padding: 0 16px 20px;
+        }
+        
+        .bot-helper-card {
+            background: linear-gradient(135deg, var(--wa-teal) 0%, var(--wa-header) 100%);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .bot-helper-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .bot-helper-content {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .bot-helper-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .bot-helper-text {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.4;
+        }
+        
+        .bot-helper-btn {
+            background: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--wa-header);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: transform 0.2s;
+        }
+        
+        .bot-helper-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* ========== CUSTOMER CONFIRMATION SECTION ========== */
+        .customer-confirm-section {
+            padding: 0 16px 20px;
+        }
+        
+        .customer-confirm-card {
+            background: var(--wa-surface-dark);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .confirm-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .confirm-icon {
+            font-size: 20px;
+        }
+        
+        .confirm-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .confirm-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .confirm-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .confirm-label {
+            font-size: 12px;
+            color: var(--wa-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 80px;
+        }
+        
+        .confirm-value {
+            flex: 1;
+            font-size: 15px;
+            color: var(--wa-text-primary);
+            font-weight: 500;
+        }
+        
+        .confirm-edit {
+            font-size: 13px;
+            color: var(--wa-green);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .confirm-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--wa-green);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+        
+        .confirm-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: var(--wa-text-secondary);
+            text-align: right;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- WhatsApp Header -->
+    <header class="wa-header">
+        <span class="wa-back">←</span>
+        <div class="wa-avatar">
+            <span class="wa-avatar-text">EAT<br>LOCAL</span>
+        </div>
+        <div class="wa-contact-info">
+            <div class="wa-contact-name"><span class="green">Local</span>Bites</div>
+            <div class="wa-contact-status">online • Calgary's local food</div>
+        </div>
+        <div class="wa-header-icons">
+            <span class="wa-header-icon">📞</span>
+            <span class="wa-header-icon">⋮</span>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-logo">
+                <span class="hero-logo-text">EAT<br>LOCAL</span>
+            </div>
+            <h1 class="hero-title"><span class="green">Local</span>Bites</h1>
+            <p class="hero-tagline">Chat. Order. Eat Local.</p>
+            
+            <div class="trust-row">
+                <div class="trust-item">
+                    <span class="icon">✓✓</span>
+                    <span class="value">2,000+</span> orders
+                </div>
+                <div class="trust-item">
+                    <span class="icon">🟢</span>
+                    <span class="value">50+</span> restaurants
+                </div>
+                <div class="trust-item">
+                    <span class="icon">⭐</span>
+                    <span class="value">4.9</span> rating
+                </div>
+            </div>
+        </section>
+        
+        <!-- Customer Info Confirmation (First - before they can order) -->
+        <section class="customer-confirm-section">
+            <div class="customer-confirm-card">
+                <div class="confirm-header">
+                    <span class="confirm-icon">👋</span>
+                    <span class="confirm-title">Welcome! Confirm your details please</span>
+                </div>
+                
+                <div class="confirm-details">
+                    <div class="confirm-row">
+                        <span class="confirm-label">Name</span>
+                        <span class="confirm-value">Ahmed Khan</span>
+                        <span class="confirm-edit">Edit</span>
+                    </div>
+                    <div class="confirm-row">
+                        <span class="confirm-label">Phone</span>
+                        <span class="confirm-value">+1 (403) 555-1234</span>
+                        <span class="confirm-edit">Edit</span>
+                    </div>
+                    <div class="confirm-row">
+                        <span class="confirm-label">📍 Deliver to</span>
+                        <span class="confirm-value">1234 17th Ave SW, Calgary</span>
+                        <span class="confirm-edit">Change</span>
+                    </div>
+                </div>
+                
+                <button class="confirm-btn">✓ Confirm & Continue</button>
+            </div>
+        </section>
+        
+        <!-- Welcome Message (After confirmation) -->
+        <div class="welcome-message">
+            <div class="message-bubble">
+                <p class="message-text">
+                    Hey <span class="highlight">Ahmed</span>! 👋 Ready to order from <span class="highlight">Calgary's best local restaurants</span>?
+                </p>
+            </div>
+        </div>
+        
+        <!-- Food Categories -->
+        <section class="categories-section">
+            <div class="section-label">What are you in the mood for?</div>
+            <div class="categories-grid">
+                <div class="category-item">
+                    <span class="category-emoji">🍕</span>
+                    <span class="category-name">Pizza</span>
+                </div>
+                <div class="category-item">
+                    <span class="category-emoji">🍔</span>
+                    <span class="category-name">Burgers</span>
+                </div>
+                <div class="category-item">
+                    <span class="category-emoji">🍜</span>
+                    <span class="category-name">Asian</span>
+                </div>
+                <div class="category-item">
+                    <span class="category-emoji">🌮</span>
+                    <span class="category-name">Mexican</span>
+                </div>
+                <div class="category-item">
+                    <span class="category-emoji">🥗</span>
+                    <span class="category-name">Healthy</span>
+                </div>
+                <div class="category-item">
+                    <span class="category-emoji">🥘</span>
+                    <span class="category-name">Indian</span>
+                </div>
+                <div class="category-item">
+                    <span class="category-emoji">🍗</span>
+                    <span class="category-name">Chicken</span>
+                </div>
+                <div class="category-item">
+                    <span class="category-emoji">☕</span>
+                    <span class="category-name">Cafe</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Bot Helper Section (After food items) -->
+        <section class="bot-helper-section">
+            <div class="bot-helper-card">
+                <div class="bot-helper-icon">🤖</div>
+                <div class="bot-helper-content">
+                    <div class="bot-helper-title">Not sure what to eat?</div>
+                    <div class="bot-helper-text">Let me help you choose! I'll ask a few questions and find the perfect meal for you.</div>
+                </div>
+                <button class="bot-helper-btn">Help me choose →</button>
+            </div>
+        </section>
+        
+        <!-- CTA Button -->
+        <section class="cta-section">
+            <button class="cta-button">
+                💬 Start Chatting to Order
+            </button>
+        </section>
+        
+        <!-- Why Local Section -->
+        <section class="why-local-section">
+            <div class="why-local-card">
+                <div class="why-local-header">
+                    <div class="why-local-icon">💚</div>
+                    <div class="why-local-title">Why Order Local?</div>
+                </div>
+                <div class="why-local-grid">
+                    <div class="why-local-item">
+                        <span class="why-local-item-icon">💰</span>
+                        <div class="why-local-item-text">
+                            <strong>Owners Keep More</strong>
+                            Not big corporations
+                        </div>
+                    </div>
+                    <div class="why-local-item">
+                        <span class="why-local-item-icon">🍁</span>
+                        <div class="why-local-item-text">
+                            <strong>100% Calgary</strong>
+                            Local restaurants only
+                        </div>
+                    </div>
+                    <div class="why-local-item">
+                        <span class="why-local-item-icon">👨‍👩‍👧</span>
+                        <div class="why-local-item-text">
+                            <strong>Support Families</strong>
+                            Your neighbours
+                        </div>
+                    </div>
+                    <div class="why-local-item">
+                        <span class="why-local-item-icon">💬</span>
+                        <div class="why-local-item-text">
+                            <strong>Easy Ordering</strong>
+                            Just chat with us
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+    
+    <!-- Bottom Input Bar -->
+    <div class="bottom-bar">
+        <span class="bottom-emoji">😊</span>
+        <input type="text" class="bottom-input" placeholder="Type what you're craving...">
+        <button class="bottom-send">🎤</button>
+    </div>
+
+</body>
+</html>
